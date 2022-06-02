@@ -11,6 +11,8 @@ black = (0, 0, 0)
 red = (213, 50, 80)
 green = (0, 255, 0)
 blue = (50, 153, 213)
+
+
  
 dis_width = 600
 dis_height = 400
@@ -20,6 +22,9 @@ pygame.display.set_caption('Snake Game adaptado')
 
  
 clock = pygame.time.Clock()
+CLOCKTICK = pygame.USEREVENT+1
+pygame.time.set_timer(CLOCKTICK, 1000) 
+
  
 snake_block = 10
 snake_speed = 15
@@ -45,7 +50,7 @@ def our_snake(snake_block, snake_list):
  
 def message(msg, color):
     mesg = font_style.render(msg, True, color)
-    dis.blit(mesg, [dis_width / 6, dis_height / 3])
+    dis.blit(mesg, (230, 150))
     
 def desenha_ret (tam_ret_x, tam_ret_y, pos_x, pos_y):
     rect = pygame.draw.rect(dis, yellow, (pos_x, pos_y, tam_ret_x, tam_ret_y))    
@@ -54,6 +59,12 @@ def desenha_ret (tam_ret_x, tam_ret_y, pos_x, pos_y):
     
 def calcula_pos_retangulo(pos_x, pos_y):
     print("lalal")
+    
+def pisca_tela():
+        cont = 5000
+        while cont!=0:
+            pygame.draw.rect(dis, black, (0,400,600,400))
+            cont-=1    
         
  
 
@@ -75,6 +86,8 @@ def gameLoop():
     pos_ret_y_1 = 380
     pos_ret_y_2 = 15
     
+    contador = 5
+    
     
     
  
@@ -89,26 +102,28 @@ def gameLoop():
  
     foodx = round(random.randrange(0, tam_ret_x - snake_block - 5) / 10.0) * 10.0
     foody = round(random.randrange(0, tam_ret_y - snake_block - 5) / 10.0) * 10.0
+    
+    temporizador = 60
  
     while not game_over:
  
         while game_close == True:
             dis.fill(black)
-            message("You Lost! Press C-Play Again or Q-Quit", red)
+            message("Voce perdeu!", red)
             Your_score(Length_of_snake - 1)
             pygame.display.update()
  
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        game_over = True
-                        game_close = False
+                    if event.key == pygame.K_SPACE:
+                        gameLoop()
+                        
                     if event.key == pygame.K_c:
                         gameLoop()
  
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_over = True
+                pygame.quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     x1_change = -snake_block
@@ -122,8 +137,23 @@ def gameLoop():
                 elif event.key == pygame.K_DOWN:
                     y1_change = snake_block
                     x1_change = 0
-                    
-        
+            if event.type == CLOCKTICK:
+                temporizador-=1    
+                contador -=1
+                if contador == 0:
+                    tam_ret_x-=15
+                    tam_ret_y-=10
+                    pos_ret_x_1-=8
+                    pos_ret_x_2-=8
+                    pos_ret_y_1-=5
+                    pos_ret_y_2-=5
+                    pos_x+=8
+                    pos_y+=5
+                    contador = 4
+                    pisca_tela()
+                
+                print(str(temporizador))     
+            
         x_cord = int(x1)
         y_cord = int(y1)            
         if x_cord >= pos_ret_x_1 or x_cord <= pos_ret_x_2 or y_cord <= pos_ret_y_2 or y_cord >= pos_ret_y_1 :
@@ -150,30 +180,23 @@ def gameLoop():
                 
              
         our_snake(snake_block, snake_List)
-        Your_score(Length_of_snake - 1)
+        
  
         pygame.display.update()
  
         if x1 == foodx and y1 == foody:
             
-            foodx = round(random.randrange(0, tam_ret_x - snake_block) / 10.0) * 10.0
-            foody = round(random.randrange(0, tam_ret_y - snake_block) / 10.0) * 10.0
+            foodx = round(random.randrange(0, tam_ret_x) / 10.0) * 10.0
+            foody = round(random.randrange(0, tam_ret_y) / 10.0) * 10.0
             Length_of_snake += 1
-            tam_ret_x-=15
-            tam_ret_y-=10
-            pos_ret_x_1-=8
-            pos_ret_x_2-=8
-            pos_ret_y_1-=5
-            pos_ret_y_2-=5
-            pos_x+=8
-            pos_y+=5
+            contador+=2
+            
             
             
             print (str(pos_x))
             print (str(pos_y))
             
-        if event.type == pygame.QUIT:
-            game_over = True
+        
         clock.tick(snake_speed)
  
     pygame.quit()
