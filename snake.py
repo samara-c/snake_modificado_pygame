@@ -32,6 +32,13 @@ snake_speed = 15
 font_style = pygame.font.SysFont("bahnschrift", 25)
 score_font = pygame.font.SysFont("arial", 25)
 
+path_fundo = "chao.jpg"
+fundo = pygame.image.load(path_fundo).convert_alpha()
+fundo = pygame.transform.scale(fundo, (600, 400))
+
+def monta_fundo():
+    dis.blit(fundo, (0,0))
+
 
 
 
@@ -53,7 +60,7 @@ def message(msg, color):
     dis.blit(mesg, (230, 150))
     
 def desenha_ret (tam_ret_x, tam_ret_y, pos_x, pos_y):
-    rect = pygame.draw.rect(dis, yellow, (pos_x, pos_y, tam_ret_x, tam_ret_y))    
+    rect = pygame.draw.rect(dis, black, (pos_x, pos_y, tam_ret_x, tam_ret_y))    
     
     
     
@@ -88,6 +95,9 @@ def gameLoop():
     
     contador = 5
     
+    pontos = 0
+    multiplicador = 1
+    
     
     
  
@@ -103,14 +113,14 @@ def gameLoop():
     foodx = round(random.randrange(0, tam_ret_x - snake_block - 5) / 10.0) * 10.0
     foody = round(random.randrange(0, tam_ret_y - snake_block - 5) / 10.0) * 10.0
     
-    temporizador = 60
+    temporizador = 180
  
     while not game_over:
  
         while game_close == True:
             dis.fill(black)
             message("Voce perdeu!", red)
-            Your_score(Length_of_snake - 1)
+            Your_score(pontos*multiplicador)
             pygame.display.update()
  
             for event in pygame.event.get():
@@ -140,6 +150,7 @@ def gameLoop():
             if event.type == CLOCKTICK:
                 temporizador-=1    
                 contador -=1
+                pontos +=1
                 if contador == 0:
                     tam_ret_x-=15
                     tam_ret_y-=10
@@ -163,7 +174,7 @@ def gameLoop():
             
         x1 += x1_change
         y1 += y1_change
-        dis.fill(black)
+        monta_fundo()
         desenha_ret(tam_ret_x, tam_ret_y, pos_x, pos_y)  
         pygame.draw.rect(dis, green, [foodx, foody, snake_block, snake_block])
         snake_Head = []
@@ -190,6 +201,7 @@ def gameLoop():
             foody = round(random.randrange(0, tam_ret_y) / 10.0) * 10.0
             Length_of_snake += 1
             contador+=2
+            multiplicador+=1
             
             
             
