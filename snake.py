@@ -33,12 +33,31 @@ font_style = pygame.font.SysFont("bahnschrift", 25)
 score_font = pygame.font.SysFont("arial", 25)
 
 path_fundo = "chao.jpg"
+path_snake_inicio = "snake.png"
+
 fundo = pygame.image.load(path_fundo).convert_alpha()
 fundo = pygame.transform.scale(fundo, (600, 400))
 
+snake_inicio = pygame.image.load(path_snake_inicio).convert_alpha()
+snake_inicio = pygame.transform.scale(snake_inicio, (150, 150))
+
+snake_font = pygame.font.Font("FredokaOne-Regular.ttf",60)
+
 def monta_fundo():
     dis.blit(fundo, (0,0))
-
+    
+def desenha_snake(snake):
+    if snake == 1:
+        dis.blit(snake_inicio, (225,150))
+        
+        
+def escreve_instrucao():
+     mesg = font_style.render("Pressione 'SPACE' para iniciar o jogo", True, white)
+     dis.blit(mesg, (100, 325))      
+      
+def escreve_titulo():
+     texto = snake_font.render("Snake", True, green)
+     dis.blit(texto, (215, 50))   
 
 
 
@@ -52,7 +71,7 @@ def Your_score(score):
  
 def our_snake(snake_block, snake_list):
     for x in snake_list:
-        pygame.draw.rect(dis, red, [x[0], x[1], snake_block, snake_block])
+        pygame.draw.rect(dis, green, [x[0], x[1], snake_block, snake_block])
  
  
 def message(msg, color):
@@ -98,7 +117,7 @@ def gameLoop():
     pontos = 0
     multiplicador = 1
     
-    
+    inicio = False
     
  
     x1 = dis_width / 2
@@ -114,8 +133,30 @@ def gameLoop():
     foody = round(random.randrange(0, tam_ret_y - snake_block - 5) / 10.0) * 10.0
     
     temporizador = 180
+    
+    
+    while inicio == False:
+            dis.fill(black)
+            desenha_snake(1)
+            escreve_instrucao()
+            escreve_titulo()
+            temporizador = 180
+            multiplicador = 1
+            pygame.display.update()
+            
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        inicio = True    
  
     while not game_over:
+        
+        
+        
  
         while game_close == True:
             dis.fill(black)
@@ -176,7 +217,7 @@ def gameLoop():
         y1 += y1_change
         monta_fundo()
         desenha_ret(tam_ret_x, tam_ret_y, pos_x, pos_y)  
-        pygame.draw.rect(dis, green, [foodx, foody, snake_block, snake_block])
+        pygame.draw.rect(dis, white, [foodx, foody, snake_block, snake_block])
         snake_Head = []
         snake_Head.append(x1)
         snake_Head.append(y1)
