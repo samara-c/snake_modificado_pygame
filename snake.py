@@ -43,6 +43,8 @@ snake_inicio = pygame.transform.scale(snake_inicio, (150, 150))
 
 snake_font = pygame.font.Font("FredokaOne-Regular.ttf",60)
 
+pygame.mixer.init()
+
 def monta_fundo():
     dis.blit(fundo, (0,0))
     
@@ -97,6 +99,10 @@ def pisca_tela():
      
  
 def gameLoop():
+    
+    pygame.mixer.music.load('musica_fundo.wav')
+    pygame.mixer.music.play(-1) 
+             
     game_over = False
     game_close = False
     
@@ -171,7 +177,9 @@ def gameLoop():
                         
                     if event.key == pygame.K_c:
                         gameLoop()
- 
+                        
+                        
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -222,6 +230,7 @@ def gameLoop():
         snake_Head.append(x1)
         snake_Head.append(y1)
         snake_List.append(snake_Head)
+              
         if len(snake_List) > Length_of_snake:
             del snake_List[0]
  
@@ -243,6 +252,8 @@ def gameLoop():
             Length_of_snake += 1
             contador+=2
             multiplicador+=1
+            sound2 = pygame.mixer.Sound("bonus.wav")
+            pygame.mixer.find_channel().play(sound2)
             
             
             
